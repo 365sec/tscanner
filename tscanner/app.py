@@ -2,12 +2,15 @@
 #task/new
 #write info to mogodb
 #input
-{"task_name":"","scan_cfg":{}}
+{"task_name":"",
+ "scan_cfg":{}}
 #output
 #successed
-{"code":0,"id":"taskid"}
+{"code":0,
+ "id":"taskid"}
 #failed
-{"code":1,"msg":"error"}
+{"code":1,
+ "msg":"error"}
 
 
 #interface 2
@@ -25,6 +28,7 @@
 #read status from mongodb
 #task/delete
 #input
+"taskid"
 #successed
 {"code":0}
 #failed
@@ -38,3 +42,4 @@
 {"id":"taskid"}
 #output
 {"report_path":""}
+
