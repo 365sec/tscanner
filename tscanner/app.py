@@ -13,7 +13,6 @@ try:
 except Exception as e:
     print(e)
 
-
 @app.route('/task/new',methods=["GET","POST"])
 def ask_new():
     task_name= request.form.get('task_name')
@@ -45,6 +44,7 @@ def task_stop():
             "code": 1,
             "msg": "error"
         }
+    tasks.findAll()
     return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 
 @app.route('/task/delete',methods=["GET","POST"])
@@ -60,7 +60,7 @@ def task_delete():
             "code": 1,
             "msg": "error"
         }
-    print contect
+    tasks.findAll()
     return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 
 @app.route('/task/report',methods=["GET","POST"])
@@ -76,6 +76,7 @@ def task_report():
             "code": 1,
             "msg": "error"
         }
+    tasks.findAll()
     return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 
 @app.route('/task/status',methods=["GET","POST"])
@@ -91,6 +92,7 @@ def task_status():
             "code": 1,
             "msg": "error"
         }
+    tasks.findAll()
     return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 if __name__ == '__main__':
     app.run()
