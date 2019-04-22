@@ -1,7 +1,18 @@
-#coding:utf-8
+
 import uuid
 import time
 
+'''
+try:
+    self.conn = MongoClient(settings["ip"], settings["port"])
+    self.db = self.conn[settings["db_name"]]
+    self.my_set = self.db[settings["set_name"]]
+    self.db = self.conn.test
+    self.collection = self.db.test
+
+except Exception as e:
+    print(e)
+'''
 
 class Task:
     def __init__(self,my_set):
@@ -15,7 +26,6 @@ class Task:
         self.start_time=""
         self.end_time=""
         self.start_time = time.strftime('%Y.%m.%d %H-%M-%S', time.localtime(time.time()))
-
 
     def insert(self, dic):
         try:
