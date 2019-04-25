@@ -4,69 +4,32 @@ import time
 
 
 class Task:
+    TS_NEW=1
+    TS_RUNING=2
+    TS_STOP=3
+    TS_ERROR=4
+    TS_STOPED=5
+    TS_COMPLETE=6
+    
     def __init__(self,my_set):
-        self.my_set=my_set
         self.taskid=""
         self.task_name=""
         self.status=0
         self.msg=""
         self.scan_cfg={}
-        self.report_path=""
         self.start_time=""
         self.end_time=""
 
-    def setvalues(self,taskid = "",task_name = "",status = 0,msg = "",scan_cfg = {},report_path = "",start_time = "",end_time = ""):
+    def setvalues(self,taskid = "",task_name = "",status = 0,msg = "",scan_cfg = {},start_time = "",end_time = ""):
         self.taskid = taskid
         self.task_name = task_name
         self.status = status
         self.msg = msg
         self.scan_cfg = scan_cfg
-        self.report_path = report_path
         self.start_time = start_time
         self.end_time = end_time
-        print "重构成功"
 
-    def insert(self, dic):
-        try:
-            self.my_set.insert(dic)
-            return True
-        except Exception,e:
-            return False
-
-    def update(self, dic, newdic):
-        if self.dbFind(dic) != False:
-            try:
-                self.my_set.update(dic,{ '$set':newdic},upsert=True)
-                self.findAll()
-                return True
-            except Exception, e:
-                return False
-        else:
-            return False
-
-    def deleted(self,dic):
-        if self.dbFind(dic) != False:
-            try:
-                self.my_set.remove(dic)
-                return True
-            except Exception,e:
-                return False
-        else:
-            return False
-
-    def dbFind(self, dic):
-        data = self.my_set.find(dic)
-        if data.count()==0:
-            return False
-        else:
-            data = list(data)
-            data1=data[0]
-            return data1
-
-    def findAll(self):
-        for task in self.my_set.find():
-            print(task)
-
+    
     def getstart_time(self):
         starttime_list=[]
         for task in self.my_set.find():
@@ -107,23 +70,8 @@ class Task:
         dic={"taskid":self.taskid}
         return self.deleted(dic)
 
-    def report(self, taskid):
-        self.taskid=taskid
-        start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        newdic={"start_time":start_time}
-        dic = {"taskid": self.taskid}
-        try:
-            re=self.dbFind(dic)
-            if re:
-                self.report_path= re.get("report_path")
-                self.update(dic,newdic)
-                return True
-            else:
-                return False
-        except Exception,e:
-            return False
 
-    def restatus(self, taskid):
+    def set_status(self, taskid,status):
         self.taskid=taskid
         dic = {"taskid": self.taskid}
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
