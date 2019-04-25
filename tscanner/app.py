@@ -1,23 +1,17 @@
 #ecoding="UTF-8"
 from flask import Flask, request
-from pymongo import MongoClient
-from config import mongo_settings
+import conn
 import task,json
 
 app = Flask(__name__)
 
-try:
-    conn = MongoClient(mongo_settings["ip"], mongo_settings["port"])
-    db = conn[mongo_settings["db_name"]]
-    my_set = db[mongo_settings["set_name"]]
-except Exception as e:
-    print(e)
 
 @app.route('/task/new',methods=["GET","POST"])
 def ask_new():
     task_name= request.form.get('task_name')
     scan_cfg= request.form.get('scan_cfg')
-    tasks=task.Task(my_set)
+    print scan_cfg
+    tasks=task.Task()
     if tasks.new(task_name,scan_cfg):
         contect={
             "code":0,
@@ -34,7 +28,7 @@ def ask_new():
 @app.route('/task/stop',methods=["GET","POST"])
 def task_stop():
     taskid= request.form.get('taskid')
-    tasks = task.Task(my_set)
+    tasks = task.Task()
     if tasks.stop(taskid):
         contect = {
             "code": 0,
@@ -50,7 +44,7 @@ def task_stop():
 @app.route('/task/delete',methods=["GET","POST"])
 def task_delete():
     taskid = request.form.get('taskid')
-    tasks = task.Task(my_set)
+    tasks = task.Task()
     if tasks.delete(taskid):
         contect = {
             "code": 0,
@@ -63,27 +57,12 @@ def task_delete():
     #tasks.findAll()
     return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 
-@app.route('/task/report',methods=["GET","POST"])
-def task_report():
-    taskid = request.form.get('taskid')
-    tasks = task.Task(my_set)
-    if tasks.report(taskid):
-        contect = {
-            "report_path":tasks.report_path
-        }
-    else:
-        contect = {
-            "code": 1,
-            "msg": "error"
-        }
-    #tasks.findAll()
-    return json.dumps(contect, encoding="UTF-8", ensure_ascii=False)
 
 @app.route('/task/status',methods=["GET","POST"])
 def task_status():
     taskid = request.form.get('taskid')
-    tasks = task.Task(my_set)
-    if tasks.restatus(taskid):
+    tasks = task.Task()
+    if tasks.get_status(taskid):
         contect = {
             "status":tasks.status
         }

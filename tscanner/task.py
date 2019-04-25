@@ -1,7 +1,8 @@
 #coding:utf-8
 import uuid
 import time
-
+from conn import retuconn
+from conn import MongoConn
 
 class Task:
     TS_NEW=1
@@ -11,7 +12,7 @@ class Task:
     TS_STOPED=5
     TS_COMPLETE=6
     
-    def __init__(self,my_set):
+    def __init__(self):
         self.taskid=""
         self.task_name=""
         self.status=0
@@ -32,9 +33,11 @@ class Task:
     
     def getstart_time(self):
         starttime_list=[]
-        for task in self.my_set.find():
+        conn1 = retuconn()
+        opeartor = MongoConn(conn1)
+        for task in opeartor.findAll():
             ##setvalues(self, taskid="", task_name="", status=0, msg="", scan_cfg={}, report_path="",start_time="", end_time=""):
-            starttime_list.append((task.get("taskid"),task.get("task_name"),task.get("status"),task.get("msg"),task.get("scan_cfg"),task.get("report_path"),task.get("start_time"),task.get("end_time")))
+            starttime_list.append((task.get("taskid"),task.get("task_name"),task.get("status"),task.get("msg"),task.get("scan_cfg"),task.get("start_time"),task.get("end_time")))
         return  starttime_list
 
     def getuuid(self):
@@ -44,6 +47,8 @@ class Task:
         self.task_name=task_name
         self.scan_cfg=scan_cfg
         self.getuuid()
+        conn1 = retuconn()
+        opeartor = MongoConn(conn1)
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         save_obj ={
             "taskid":self.taskid,
@@ -51,36 +56,40 @@ class Task:
             "status":self.status,
             "msg":self.msg,
             "scan_cfg":self.scan_cfg,
-            "report_path":self.report_path,
             "start_time":start_time,
             "end_time":self.end_time
         }
-        return  self.insert(save_obj)
+        return  opeartor.insert(save_obj)
 
     def stop(self, taskid):
+        conn1 = retuconn()
+        opeartor=MongoConn(conn1)
         self.taskid=taskid
         self.status=1
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         dic={"taskid":self.taskid}
         newdic={"status":1,"start_time":start_time}
-        return self.update(dic, newdic )
+        return opeartor.update(dic, newdic )
 
     def delete(self, taskid):
+        conn1 = retuconn()
+        opeartor = MongoConn(conn1)
         self.taskid=taskid
         dic={"taskid":self.taskid}
-        return self.deleted(dic)
+        conn1 = retuconn()
+        return opeartor.deleted(dic)
 
 
-    def set_status(self, taskid,status):
+    def get_status(self, taskid):
         self.taskid=taskid
         dic = {"taskid": self.taskid}
-        start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        newdic={"start_time":start_time}
         try:
-            re=self.dbFind(dic)
+            conn1 = retuconn()
+            opeartor = MongoConn(conn1)
+            re=opeartor.dbFind(dic)
+            print re
             if re:
                 self.status= re.get("status")
-                self.update(dic,newdic)
                 return True
             else:
                 return False
