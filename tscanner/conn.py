@@ -1,9 +1,23 @@
+from config import mongo_settings
+from pymongo import MongoClient
+
+def retuconn():
+    try:
+        conn = MongoClient(mongo_settings["ip"], mongo_settings["port"])
+        db = conn[mongo_settings["db_name"]]
+        my_set = db[mongo_settings["set_name"]]
+        return my_set
+    except Exception as e:
+        print(e)
+
+
 
 class MongoConn:
     
-    def __init__(self):
+    def __init__(self,my_set):
         print "++"
-        
+        self.my_set=my_set
+
     def insert(self, dic):
         try:
             self.my_set.insert(dic)
@@ -42,5 +56,5 @@ class MongoConn:
             return data1
 
     def findAll(self):
-        for task in self.my_set.find():
-            print(task)
+        return self.my_set.find()
+

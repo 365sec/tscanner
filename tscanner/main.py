@@ -4,22 +4,6 @@ import task,json
 from pymongo import MongoClient
 app = Flask(__name__)
 
-settings = {
-    "ip":'127.0.0.1',   #ip
-    "port":27017,
-    "db_name" : "mydb",
-    "set_name" : "test_set"
-}
-try:
-    conn = MongoClient(settings["ip"], settings["port"])
-    db = conn[settings["db_name"]]
-    my_set = db[settings["set_name"]]
-    db = conn.test
-    collection = db.test
-
-except Exception as e:
-    print(e)
-
 
 @app.route('/task/new',methods=["GET","POST"])
 def ask_new():

@@ -1,6 +1,5 @@
 #coding:utf-8
 #auth shaochuyu@shunwang.com
-import pytz
 import os
 import json
 import uuid
