@@ -1,8 +1,7 @@
 #coding:utf-8
 import uuid
 import time
-from conn import retuconn
-from conn import MongoConn
+from conn import MongoConn,retuconn
 
 class Task:
     TS_NEW=1
@@ -47,6 +46,7 @@ class Task:
         self.task_name=task_name
         self.scan_cfg=scan_cfg
         self.getuuid()
+        self.status=Task.TS_NEW
         conn1 = retuconn()
         opeartor = MongoConn(conn1)
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
@@ -65,10 +65,10 @@ class Task:
         conn1 = retuconn()
         opeartor=MongoConn(conn1)
         self.taskid=taskid
-        self.status=1
+        self.status=self.TS_STOP
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         dic={"taskid":self.taskid}
-        newdic={"status":1,"start_time":start_time}
+        newdic={"status":self.status,"start_time":start_time}
         return opeartor.update(dic, newdic )
 
     def delete(self, taskid):
@@ -78,7 +78,16 @@ class Task:
         dic={"taskid":self.taskid}
         conn1 = retuconn()
         return opeartor.deleted(dic)
-
+     
+    def set_status(self,status,info=None):
+        print "--"
+        conn1 = retuconn()
+        opeartor = MongoConn(conn1)
+        newdic={"status":self.status}
+        dic={"taskid":self.taskid}
+        if info!=None :
+            newdic["msg"]=info
+        return opeartor.update(dic, newdic )
 
     def get_status(self, taskid):
         self.taskid=taskid
